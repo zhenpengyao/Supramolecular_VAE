@@ -11,7 +11,7 @@ def basic_config(work_dir):
     config = AttributeDict()
     # Model saving and loading. If None, should be filed.
     config['files_data'] = 'data/MOF_gen_train.csv.gz'
-    config['files_prop'] = 'data/MOF_properties_train.csv'
+    config['files_prop'] = 'data/MOF_properties_train.csv.gz'
     config['files_results'] = work_dir
     config['files_config'] = 'config.json'
     config['files_log'] = 'log.csv'
