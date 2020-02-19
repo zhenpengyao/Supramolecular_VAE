@@ -18,10 +18,10 @@ def basic_config(work_dir):
     # Training parameters.
     config['train_device'] = 'cpu'
     config['train_seed'] = 42
-    config['train_batch_size'] = 64
+    config['train_batch_size'] = 1536
     config['train_epochs'] = 20
-    config['train_lr'] = 4e-3
-    config['train_clip_grad'] = 50
+    config['train_lr'] = 5e-3
+    config['train_clip_grad'] =20
     return config
 
 
@@ -38,7 +38,7 @@ def vae_config():
 
     config["kl_cycle_length"] = 15
     config["kl_cycle_constant"] = 3
-    config["kl_weight_start"] = 0.0
+    config["kl_weight_start"] = 1e-5
     config["kl_weight_end"] = 0.77
 
     config['vae_latent_dim'] = 287
