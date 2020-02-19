@@ -24,4 +24,6 @@ dependencies:
   - scipy
   - isort
   - scikit-learn
-
+  - pip:
+    - more-itertools==8.2.0
+    - selfies==0.2.4
