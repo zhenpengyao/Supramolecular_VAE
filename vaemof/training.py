@@ -113,10 +113,10 @@ class TrainStats:
         if trues and preds:
             for key in preds:
                 if preds[key] is not None:
-                    self.preds[key].append(preds[key].numpy())
+                    self.preds[key].append(preds[key].cpu().numpy())
             for key in trues:
                 if trues.get(key) is not None:
-                    self.trues[key].append(trues[key].numpy())
+                    self.trues[key].append(trues[key].cpu().numpy())
 
         return reported
 
