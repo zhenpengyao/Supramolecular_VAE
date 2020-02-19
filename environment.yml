@@ -1,12 +1,10 @@
 name: base
 channels:
   - pytorch
-  - http://conda.anaconda.org/psi4
   - defaults
   - rdkit
   - openbabel
   - conda-forge
-  - damianavila82
 dependencies:
   - _libgcc_mutex=0.1=main
   - _pytorch_select=0.2=gpu_0
@@ -186,5 +184,4 @@ dependencies:
   - pip:
     - more-itertools==8.2.0
     - selfies==0.2.4
-prefix: /home/beangoben/anaconda3
 
