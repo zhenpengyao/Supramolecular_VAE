@@ -105,6 +105,8 @@ def get_model_config(work_dir, preset='full', rand=False):
         config['vae_selfies_dec'] = False
         config['vae_mof_enc'] = True
         config['vae_mof_dec'] = False
+        config['y_start'] = 0
+        config['y_w_start'] = 1.0
     elif preset == 'mof_vae':
         config['vae_y_dec'] = False
         config['vae_selfies_dec'] = True

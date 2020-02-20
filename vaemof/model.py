@@ -351,12 +351,12 @@ class VAEMOF(nn.Module):
         """Forward pass for MOFVAE"""
         self.check_inputs(mof, y, y_mask)
         outs = {'x': None, 'mof': None, 'y': None}
-        losses = {'kl': 0.0, 'x': 0.0, 'mof': 0.0, 'y': 0.0}
+        losses = {key: torch.tensor(0.0) for key in ['kl','x','mof','y']}
         h_x = self.enc_x(x)
         h_mof = self.enc_mof(mof) if self.use_mof_encoder else 0.0
         h = h_x + h_mof
         z, kl = reparameterize(self.z_mu(h), self.z_logvar(h))
-        losses['kl'] = kl if self.use_kl else 0.0
+        losses['kl'] = kl if self.use_kl else losses['kl']
         if self.use_decoder:
             losses['x'], outs['x'] = self.dec_x(x, z)
 
