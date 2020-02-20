@@ -155,6 +155,12 @@ class TrainStats:
 
     def finalize_epoch(self, save=True):
         self.stats.update(self.report_stats)
+        for prefix in ['train','test']:
+            loss = self.stats[f'{prefix}_loss']
+            for key in COMPONENTS:
+                key_loss = self.stats[f'λ_{key}']*self.stats[f'{prefix}_{key}']
+                self.stats[f'{prefix}_{key}_ratio'] = key_loss/loss
+
         self.results.append(self.stats)
         if save:
             pd.DataFrame(self.results).to_csv(self.filename, index=None)

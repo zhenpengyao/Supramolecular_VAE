@@ -7,7 +7,12 @@ from vaemof.utils import header_str
 PRESETS = ['vae', 'ssvae', 'mof_vae', 'mof_y', 'full']
 
 
-def basic_config(work_dir):
+rand_uniform10 = lambda low,high: 10**np.random.uniform(low,high)
+rand_uniform = lambda low,high: np.random.uniform(low,high)
+rand_int = lambda low,high: np.random.randint(low,high+1)
+rand_choice = lambda x: np.random.choice(x)
+
+def basic_config(work_dir, rand = False):
     config = AttributeDict()
     # Model saving and loading. If None, should be filed.
     config['files_data'] = 'data/MOF_gen_train.csv.gz'
@@ -19,29 +24,29 @@ def basic_config(work_dir):
     config['train_device'] = 'cpu'
     config['train_seed'] = 42
     config['train_batch_size'] = 1536
-    config['train_epochs'] = 20
-    config['train_lr'] = 5e-3
-    config['train_clip_grad'] =20
+    config['train_epochs'] = 60
+    config['train_lr'] = rand_uniform10(-5,-2) if rand else 5e-3
+    config['train_clip_grad'] = 20
     return config
 
 
-def vae_config():
+def vae_config(rand=False):
     config = AttributeDict()
 
-    config['enc_hidden_dim'] = 256
-    config['enc_n_layers'] = 1
-    config['enc_dropout'] = 0.25
+    config['enc_hidden_dim'] = rand_choice(np.arange(128,808,64)) if rand else 256
+    config['enc_n_layers'] = rand_int(1,3) if rand else 1
+    config['enc_dropout'] = rand_uniform(0.,0.3) if rand else 0.25
 
-    config['dec_hidden_dim'] = 512
-    config['dec_n_layers'] = 3
-    config['dec_dropout'] = 0.0
+    config['dec_hidden_dim'] = rand_choice(np.arange(128,808,64)) if rand else 512
+    config['dec_n_layers'] = rand_int(1,3) if rand else 1
+    config['dec_dropout'] = rand_uniform(0.,0.3) if rand else 0.0
 
     config["kl_cycle_length"] = 15
     config["kl_cycle_constant"] = 3
     config["kl_weight_start"] = 1e-5
-    config["kl_weight_end"] = 0.77
+    config["kl_weight_end"] = rand_uniform10(-5,2) if rand else 0.77
 
-    config['vae_latent_dim'] = 287
+    config['vae_latent_dim'] = rand_choice(np.arange(128,316,16)) if rand else 256
     config['vae_y_dec'] = True
     config['vae_selfies_dec'] = True
     config['vae_mof_enc'] = True
@@ -51,18 +56,18 @@ def vae_config():
     return config
 
 
-def mof_config():
+def mof_config(rand=false):
     config = AttributeDict()
-    config['mof_encoding'] = 'all'  # 'all','id','cats'
-    config['mof_weighted_loss'] = True  # True or false
+    config['mof_encoding'] = rand_choice(['all','id', 'cats']) if rand else 'all'
+    config['mof_weighted_loss'] = rand_choice([True,False]) if rand else True
     config['mof_w_start'] = 0.0
-    config['mof_w_end'] = 1.0  # va
-    config['mof_start'] = 0  # Epoch to start weight annealing.
+    config['mof_w_end'] = rand_choice([1e-3,1e-2,.1,.25,.5,.75,1.0]) if rand else 1.0
+    config['mof_start'] = 15  # Epoch to start weight annealing.
     config['mof_const_length'] = 10  # How many epochs to have constant values.
     return config
 
 
-def y_config():
+def y_config(rand=False):
     config = AttributeDict()
 
     config['y_labels'] = ['lcd', 'pld',
@@ -73,18 +78,18 @@ def y_config():
                           'co2ch4_heat_co2', 'co2ch4_heat_ch4', 'co2ch4_heat_molfrac', 'scscore']
     config['y_weights'] = [1] * len(config['y_labels'])
     config['y_w_start'] = 0.0
-    config['y_w_end'] = 1.0  # va
-    config['y_start'] = 0  # Epoch to start weight annealing.
+    config['y_w_end'] = rand_choice([1e-3,1e-2,.1,.25,.5,.75,1.0]) if rand else 1.0
+    config['y_start'] = 15  # Epoch to start weight annealing.
     config['y_const_length'] = 10  # How many epochs to have constant values.
 
     return config
 
 
-def get_model_config(work_dir, preset='full'):
-    config = basic_config(work_dir)
-    config.update(vae_config())
-    config.update(mof_config())
-    config.update(y_config())
+def get_model_config(work_dir, preset='full', rand=False):
+    config = basic_config(work_dir, rand)
+    config.update(vae_config(rand))
+    config.update(mof_config(rand))
+    config.update(y_config(rand))
     if preset == 'vae':
         config['vae_y_dec'] = False
         config['vae_selfies_dec'] = True
