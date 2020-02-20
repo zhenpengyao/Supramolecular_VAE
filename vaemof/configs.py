@@ -35,11 +35,11 @@ def vae_config(rand=False):
 
     config['enc_hidden_dim'] = rand_choice(np.arange(128, 808, 64)) if rand else 256
     config['enc_n_layers'] = rand_int(1, 3) if rand else 1
-    config['enc_dropout'] = rand_uniform(0., 0.3) if rand else 0.25
+    config['enc_dropout'] = rand_choice(np.linspace(0.0,.3,.05)) if rand else 0.25
 
     config['dec_hidden_dim'] = rand_choice(np.arange(128, 808, 64)) if rand else 512
     config['dec_n_layers'] = rand_int(1, 3) if rand else 1
-    config['dec_dropout'] = rand_uniform(0., 0.3) if rand else 0.0
+    config['dec_dropout'] = rand_choice(np.linspace(0.0,.3,.05)) if rand else 0.0
 
     config["kl_cycle_length"] = 15
     config["kl_cycle_constant"] = 3

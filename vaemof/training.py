@@ -142,24 +142,27 @@ class TrainStats:
             samesies = np.sum(np.equal(mof, mof_hat))
             self.report_stats['mof_acc'] = samesies / np.prod(mof.shape) * 100.0
         if self.preds['y']:
-            y_true = flat_map(self.trues['y'], outer_fn=np.stack)
-            y_pred = flat_map(self.preds['y'], outer_fn=np.stack)
+            y_trues = flat_map(self.trues['y'], outer_fn=np.stack)
+            y_preds = flat_map(self.preds['y'], outer_fn=np.stack)
             mask = flat_map(self.trues['y_mask'], outer_fn=np.stack)
             mask = mask.ravel().astype(bool)
+            y_trues = model.vocab_y.inverse_transform(y_trues[mask])
+            y_preds = model.vocab_y.inverse_transform(y_preds[mask])
             values = OrderedDict()
             labels = model.vocab_y.labels
             for i, label in enumerate(labels):
-                values[label] = sklearn.metrics.r2_score(y_true[mask, i], y_pred[mask, i])
-            self.report_stats['mean_r2'] = np.nanmean(list(values.values()))
+                values[f'{label}-r2'] = sklearn.metrics.r2_score(y_trues[i], y_preds[i])
+                values[f'{label}-MAE'] = sklearn.metrics.mean_absolute_error(y_trues[i], y_preds[i])
+            self.report_stats['mean_r2'] = np.nanmean([values[f'{label}-r2'] for label in labels])
             self.stats.update(values)
 
     def finalize_epoch(self, save=True):
         self.stats.update(self.report_stats)
-        for prefix in ['train','test']:
+        for prefix in ['train', 'test']:
             loss = self.stats[f'{prefix}_loss']
             for key in COMPONENTS:
-                key_loss = self.stats[f'λ_{key}']*self.stats[f'{prefix}_{key}']
-                self.stats[f'{prefix}_{key}_ratio'] = key_loss/loss
+                key_loss = self.stats[f'λ_{key}'] * self.stats[f'{prefix}_{key}']
+                self.stats[f'{prefix}_{key}_ratio'] = key_loss / loss
 
         self.results.append(self.stats)
         if save:

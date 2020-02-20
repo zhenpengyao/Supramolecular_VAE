@@ -62,6 +62,9 @@ def model_summary(model, include_children=True):
     train_params = sum([np.product(p.size()) for p in model.parameters() if p.requires_grad])
     print(f'Trainable params: {train_params} out of {n_params} total ({train_params / n_params * 100.0:.2f}%)')
 
+def get_n_params(model):
+    """Get number of parameters."""
+    return sum([np.product(p.size()) for p in model.parameters()])
 
 def get_activation(astr: Text) -> nn.modules.activation:
     activations = {'selu': nn.SELU, 'relu': nn.ReLU, 'prelu': nn.PReLU, 'leaky_relu': nn.LeakyReLU,

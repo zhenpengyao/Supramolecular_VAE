@@ -128,16 +128,14 @@ class CharEncoder(nn.Module):
             batch_first=True,
             dropout=dropout if n_layers > 1 else 0,
             bidirectional=False)
-        self.linear = nn.Linear(hidden_dim * n_layers, latent_dim * 2)
+        self.h_to_z = nn.ModuleList([nn.Linear(hidden_dim, latent_dim * 2) for _ in range(n_layers)])
 
     def forward(self, x: tensor) -> tensor:
         x_emb = [self.emb(i_x) for i_x in x]
         x_pack = nn.utils.rnn.pack_sequence(x_emb)
         _, h = self.rnn(x_pack)
-        n_layers, batch_size, hidden_dim = h.shape
-        # [n_layers, batch_size, hidden_dim] -> [batch_size,hidden_dim*n_layers]
-        h = h.view(batch_size, hidden_dim * n_layers)
-        out = self.linear(h)
+        # [n_layers, batch_size, hidden_dim]
+        out = torch.sum(torch.stack([linear(h[index]) for index, linear in enumerate(self.h_to_z)]), axis=0)
         return out
 
 
