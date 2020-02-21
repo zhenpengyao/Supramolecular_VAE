@@ -8,3 +8,4 @@ Clone the repo, to generate a working enviroment download miniconda 3.7 and use 
 git clone git@github.com/zhenpengyao/Supramolecular_VAE
 conda env update --file enviroment.yml
 ```
+![Image description](/images/OptimizationDemo.png)
