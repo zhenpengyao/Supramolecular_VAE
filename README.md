@@ -1,4 +1,5 @@
-# Superamolecular variational autoencoder for reticular frameworks
+# Superamolecular Variational Autoencoder for Reticular Frameworks
+
 ![GitHub Logo](/images/logo.png)
 
 
