@@ -112,7 +112,7 @@ class TrainStats:
             reported[key] = np.mean(self.buffers[f'{prefix}_{key}'])
         if trues and preds:
             for key in preds:
-                if preds[key] is not None:
+                if preds.get(key) is not None:
                     self.preds[key].append(preds[key].cpu().numpy())
             for key in trues:
                 if trues.get(key) is not None:

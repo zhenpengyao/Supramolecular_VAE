@@ -9,7 +9,7 @@ import torch
 from joblib import Parallel, delayed
 from more_itertools import chunked
 from rdkit import Chem
-from sklearn.preprocessing import LabelEncoder, StandardScaler
+from sklearn.preprocessing import LabelEncoder, StandardScaler, PowerTransformer, QuantileTransformer
 from tqdm.auto import tqdm
 
 
@@ -286,8 +286,19 @@ class MOFVocab:
 class PropVocab:
 
     @classmethod
-    def from_data(cls, df: pd.DataFrame, labels: List[Text], weights: Optional[np.ndarray] = None):
-        return cls(StandardScaler().fit(df[labels].values), labels, weights)
+    def from_data(cls, df: pd.DataFrame,
+                  labels: List[Text],
+                  weights: Optional[np.ndarray] = None,
+                  scaler_type:Optional[Text]=None):
+        if scaler_type is None:
+            scaler = StandardScaler()
+        elif scaler_type == 'power':
+            scaler = PowerTransformer()
+        elif scaler_type == 'quantile':
+            scaler = QuantileTransformer()
+        else:
+            raise ValueError(f'{scaler_type} not implemented!')
+        return cls(scaler.fit(df[labels].values), labels, weights)
 
     def __init__(self, scaler: Any, labels: List[Text], weights: Optional[np.ndarray] = None):
         self.scaler = scaler
