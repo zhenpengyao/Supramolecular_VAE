@@ -39,3 +39,8 @@ def header_html(a_str, level=1):
 
 def subset_list(alist, indices):
     return [alist[index] for index in indices]
+
+def chunks(l, n):
+    """Yield successive n-sized chunks from l."""
+    for i in range(0, len(l), n):
+        yield l[i:i + n]

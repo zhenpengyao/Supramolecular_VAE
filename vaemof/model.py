@@ -87,7 +87,6 @@ class MOFDecoder(nn.Module):
         mofs = [self.vocab_mof.ids_to_mof(mof) for mof in mof_ids_list]
         return mofs
 
-
 class PropDecoder(nn.Module):
     """Property predictor based on latent space."""
 

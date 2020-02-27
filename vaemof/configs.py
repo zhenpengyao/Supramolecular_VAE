@@ -25,7 +25,7 @@ def basic_config(work_dir, rand=False):
     config['train_seed'] = 42
     config['train_batch_size'] = 1536
     config['train_epochs'] = 60
-    config['train_lr'] = float(rand_uniform10(-5, -2)) if rand else 5e-3
+    config['train_lr'] = 0.00013138571209279765 #float(rand_uniform10(-5, -2)) if rand else 5e-3
     config['train_clip_grad'] = 20
     return config
 
@@ -33,20 +33,20 @@ def basic_config(work_dir, rand=False):
 def vae_config(rand=False):
     config = AttributeDict()
 
-    config['enc_hidden_dim'] = int(rand_choice(np.arange(128, 808, 64))) if rand else 256
-    config['enc_n_layers'] = int(rand_int(1, 3)) if rand else 1
-    config['enc_dropout'] = float(rand_choice(np.linspace(0.0,.3,6))) if rand else 0.25
+    config['enc_hidden_dim'] = 768 #int(rand_choice(np.arange(128, 808, 64))) if rand else 256
+    config['enc_n_layers'] = 1 #int(rand_int(1, 3)) if rand else 1
+    config['enc_dropout'] = 0.18 #float(rand_choice(np.linspace(0.0,.3,6))) if rand else 0.25
 
-    config['dec_hidden_dim'] = int(rand_choice(np.arange(128, 808, 64))) if rand else 512
-    config['dec_n_layers'] = int(rand_int(1, 3)) if rand else 1
-    config['dec_dropout'] = float(rand_choice(np.linspace(0.0,.3,6))) if rand else 0.0
+    config['dec_hidden_dim'] = 192 #int(rand_choice(np.arange(128, 808, 64))) if rand else 512
+    config['dec_n_layers'] = 2 #int(rand_int(1, 3)) if rand else 1
+    config['dec_dropout'] = 0.12 #float(rand_choice(np.linspace(0.0,.3,6))) if rand else 0.0
 
     config["kl_cycle_length"] = 15
     config["kl_cycle_constant"] = 3
     config["kl_weight_start"] = 1e-5
-    config["kl_weight_end"] = float(rand_uniform10(-5, 2)) if rand else 0.77
+    config["kl_weight_end"] = 0.0012886751810776008 #float(rand_uniform10(-5, 2)) if rand else 0.77
 
-    config['vae_latent_dim'] = int(rand_choice(np.arange(128, 316, 16))) if rand else 256
+    config['vae_latent_dim'] = 256 #int(rand_choice(np.arange(128, 316, 16))) if rand else 256
     config['vae_y_dec'] = True
     config['vae_selfies_dec'] = True
     config['vae_mof_enc'] = True
@@ -58,10 +58,10 @@ def vae_config(rand=False):
 
 def mof_config(rand=False):
     config = AttributeDict()
-    config['mof_encoding'] = rand_choice(['all', 'id', 'cats']) if rand else 'all'
-    config['mof_weighted_loss'] = rand_choice([True, False]) if rand else True
+    config['mof_encoding'] = 'all' #rand_choice(['all', 'id', 'cats']) if rand else 'all'
+    config['mof_weighted_loss'] = False #rand_choice([True, False]) if rand else True
     config['mof_w_start'] = 0.0
-    config['mof_w_end'] = float(rand_choice([1e-3, 1e-2, .1, .25, .5, .75, 1.0])) if rand else 1.0
+    config['mof_w_end'] = 0.5 #float(rand_choice([1e-3, 1e-2, .1, .25, .5, .75, 1.0])) if rand else 1.0
     config['mof_start'] = 15  # Epoch to start weight annealing.
     config['mof_const_length'] = 10  # How many epochs to have constant values.
     return config
@@ -78,7 +78,7 @@ def y_config(rand=False):
                           'co2ch4_heat_co2', 'co2ch4_heat_ch4', 'co2ch4_heat_molfrac', 'scscore']
     config['y_weights'] = [1] * len(config['y_labels'])
     config['y_w_start'] = 0.0
-    config['y_w_end'] = float(rand_choice([1e-3, 1e-2, .1, .25, .5, .75, 1.0])) if rand else 1.0
+    config['y_w_end'] = 0.5 #float(rand_choice([1e-3, 1e-2, .1, .25, .5, .75, 1.0])) if rand else 1.0
     config['y_start'] = 15  # Epoch to start weight annealing.
     config['y_const_length'] = 10  # How many epochs to have constant values.
 
@@ -153,13 +153,12 @@ class AttributeDict(OrderedDict):
 
     def save_to_json(self, filename):
         with open(filename, 'w') as afile:
-            json.dump(str(self), afile, indent=4)
+            json.dump(self, afile, indent=4)
 
     @classmethod
     def from_jsonfile(cls, filename):
         with open(filename, 'r') as afile:
-            data = json.JSONDecoder(
-                object_pairs_hook=OrderedDict).decode(afile.read())
+            data = json.loads(afile.read())
         return cls(data)
 
 
