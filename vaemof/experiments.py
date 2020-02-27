@@ -13,7 +13,8 @@ import sklearn.metrics
 import torch
 from dask.diagnostics import ProgressBar
 from tqdm.autonotebook import tqdm
-
+from more_itertools import chunked
+from vaemof.vocabs import valid_smiles
 from . import utils
 from .scscore import SCScorer
 
@@ -71,25 +72,25 @@ def regression_statistics(y_true, y_pred, targets, prefix=''):
 
     return pd.DataFrame(results)
 
-
-def predict_properties(data, model, trainer, batch_size=64):
-    n = len(data)
+def sample_model(model, n , batch_size=256, smiles_column='branch_smiles'):
     n_loops = int(np.ceil(n / batch_size))
-    y_true = []
-    y_pred = []
-    with torch.no_grad():
-        for chunk in  tqdm(utils.chunks(data,batch_size),total=n_loops, desc='Generating predictions'):
-            x_tensor = model.tuples_to_tensors(chunk)['x']
-            mof_tensor = model.tuples_to_tensors(chunk)['mof']
-            y_tensor = model.tuples_to_tensors(chunk)['y']
-            y_mask = model.tuples_to_tensors(chunk)['y_mask']
-            losses,outs = model.forward(x_tensor,mof_tensor,y_tensor,y_mask)
-            y_true.extend(model.vocab_y.inverse_transform(y_tensor))
-            y_pred.extend(model.z_to_outputs(len(chunk))['y'])
-    y_pred = np.stack(y_pred)
-    y_true = np.stack(y_true)
-    return y_pred,y_true
+    smiles_list, mofs, props = [], [], []
+    for chunk in tqdm(chunked(range(n), batch_size), total=n_loops, desc='Samples'):
+        z = model.sample_z_prior(len(chunk))
+        outs = model.z_to_outputs(z)
+        smiles_list.extend(outs['x'])
+        mofs.extend(outs['mof'])
+        props.extend(outs['y'])
 
+    props = np.stack(props)
+    gen_df = pd.DataFrame(smiles_list, columns=[smiles_column])
+    gen_df['valid'] = gen_df[smiles_column].apply(valid_smiles)
+
+    for index,label in enumerate(model.vocab_mof.categories):
+        gen_df[label] = [m[index] for m in mofs]
+    for index, label in enumerate(model.vocab_y.labels):
+        gen_df[label] = props[:,index]
+    return gen_df
 
 def plot_mof_stats(df, mof_vocab, mof_columns):
     for col in mof_columns:

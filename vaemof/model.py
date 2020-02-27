@@ -380,12 +380,10 @@ class VAEMOF(nn.Module):
             z, _ = reparameterize(self.z_mu(h), self.z_logvar(h))
         return z
 
-    def z_to_outputs(self, n_batch: int, z: Optional[tensor] = None, max_len: Optional[int] = None, temp: float = 1.0):
+    def z_to_outputs(self,  z: tensor, max_len: Optional[int] = None, temp: float = 1.0):
         """Generating n_batch samples in eval mode."""
         outs = {}
         with torch.no_grad():
-            if z is None:
-                z = self.sample_z_prior(n_batch)
             z = z.to(self.device)
             if self.use_decoder:
                 outs['x'] = self.dec_x.z_to_x(z, max_len, temp)
