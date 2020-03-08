@@ -21,6 +21,20 @@ from .scscore import SCScorer
 tqdm.pandas()
 
 
+def perturb_z(z, noise_norm, constant_norm=False):
+    if noise_norm > 0.0:
+        noise_vec = np.random.normal(0, 1, size=z.shape).astype(float)
+        noise_vec = noise_vec / np.linalg.norm(noise_vec).astype(float)
+        if constant_norm:
+            return (z + (noise_norm * noise_vec)).float()
+        else:
+            noise_amp = np.random.uniform(
+                0, noise_norm, size=(z.shape[0], 1))
+            return (z + (noise_amp * noise_vec)).float()
+    else:
+        return z.float()
+
+
 def fast_scscore(df, smiles_column, label='scscore', scorer=None):
     if scorer is None:
         scorer = SCScorer()
