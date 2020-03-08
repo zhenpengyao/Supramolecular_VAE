@@ -47,7 +47,7 @@ def build_linker(branch, core):
             for connect_num in range(core_list[0].count('Os')):
                 core_list = create_linker(bran,core_list)
             new_linker_list.extend(core_list)
-        new_linker_dic = {new_linker_list[i]: scorer.get_score_from_smi(new_linker_list[i])[1] for i in range(len(new_linker_list))}
+        new_linker_dic = {new_linker_list[i]: SCScorer.get_score_from_smi(new_linker_list[i])[1] for i in range(len(new_linker_list))}
         new_linker = sorted(new_linker_dic, key=new_linker_dic.get, reverse=True)[0]    
     return(new_linker)
 
