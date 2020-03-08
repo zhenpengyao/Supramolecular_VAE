@@ -23,6 +23,8 @@ dependencies:
   - matplotlib
   - scipy
   - isort
+  - xlrd
+  - openpyxl
   - scikit-learn
   - pip:
     - more-itertools==8.2.0
