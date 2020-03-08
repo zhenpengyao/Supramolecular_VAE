@@ -76,12 +76,13 @@ def regression_statistics(y_true, y_pred, targets, prefix=''):
     results = []
     for index, col in enumerate(targets):
         result = OrderedDict({'label': col})
-        result[prefix +
-               'R2'] = sklearn.metrics.r2_score(y_true[:, index], y_pred[:, index])
-        result[prefix + 'MAE'] = sklearn.metrics.mean_absolute_error(
-            y_true[:, index], y_pred[:, index])
-        result[prefix + 'RMSE'] = np.sqrt(
-            sklearn.metrics.mean_squared_error(y_true[:, index], y_pred[:, index]))
+        r2 = sklearn.metrics.r2_score(y_true[:, index], y_pred[:, index])
+        mae = sklearn.metrics.mean_absolute_error(y_true[:, index], y_pred[:, index])
+        rmse = np.sqrt(sklearn.metrics.mean_squared_error(y_true[:, index], y_pred[:, index]))
+        result[prefix + 'R2'] = r2
+        result[prefix + 'MAE'] = mae
+        result[prefix + 'RMSE'] = rmse
+        print(col,': R2 = ',r2,', MAE = ',mae,', RMSE = ',rmse)
         results.append(result)
 
     return pd.DataFrame(results)
