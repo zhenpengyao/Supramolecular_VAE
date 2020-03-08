@@ -290,7 +290,7 @@ class PropVocab:
                   labels: List[Text],
                   weights: Optional[np.ndarray] = None,
                   scaler_type:Optional[Text]=None):
-        if scaler_type is None:
+        if scaler_type == 'standard':
             scaler = StandardScaler()
         elif scaler_type == 'power':
             scaler = PowerTransformer()
