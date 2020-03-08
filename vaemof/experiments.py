@@ -39,7 +39,7 @@ def create_linker(branch,core_list):
     return list(set(linker))
 
 
-def build_linker(branch, core):
+def build_linker(branch, core, score=0):
     if core == 'None':
         new_linker = branch
     else:
