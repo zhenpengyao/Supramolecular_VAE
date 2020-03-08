@@ -20,6 +20,37 @@ from .scscore import SCScorer
 
 tqdm.pandas()
 
+def create_linker(branch,core_list):
+    rxn = AllChem.ReactionFromSmarts("[Os][*:1].[Os][*:2]>>[*:1][*:2]")
+    linker = []
+    branch_mol = Chem.MolFromSmiles(branch)
+    for core in core_list:
+        core_mol = Chem.MolFromSmiles(core)
+        results = rxn.RunReactants( [branch_mol, core_mol] )
+        for products in results:
+            for mol in products:
+                linker.append(Chem.MolToSmiles(mol))
+    return(list(set(linker)))
+
+
+def build_linker(branch, core):
+    if core == 'None':
+        new_linker = branch
+    else:
+        branch_left = branch.replace('Lr','Os',1)
+        branch_right = branch_left.replace('Os','As').replace('Lr','Os').replace('As','Lr')
+        branch_list = list(set([branch_left, branch_right]))
+        core = core.replace('Lr','Os')    
+        new_linker_list = []
+        for bran in branch_list:
+            core_list = [core]
+            for connect_num in range(core_list[0].count('Os')):
+                core_list = create_linker(bran,core_list)
+            new_linker_list.extend(core_list)
+        new_linker_dic = {new_linker_list[i]: scorer.get_score_from_smi(new_linker_list[i])[1] for i in range(len(new_linker_list))}
+        new_linker = sorted(new_linker_dic, key=new_linker_dic.get, reverse=True)[0]    
+    return(new_linker)
+
 
 def perturb_z(z, noise_norm, constant_norm=False):
     if noise_norm > 0.0:
