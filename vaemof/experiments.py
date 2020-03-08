@@ -16,7 +16,13 @@ from tqdm.autonotebook import tqdm
 from more_itertools import chunked
 from vaemof.vocabs import valid_smiles
 from . import utils
-from .scscore import SCScorer
+from vaemof.scscore import SCScorer
+from rdkit import Chem
+from rdkit.Chem import AllChem
+
+scorer = SCScorer()
+scorer.restore()
+
 
 tqdm.pandas()
 
@@ -30,7 +36,7 @@ def create_linker(branch,core_list):
         for products in results:
             for mol in products:
                 linker.append(Chem.MolToSmiles(mol))
-    return(list(set(linker)))
+    return list(set(linker))
 
 
 def build_linker(branch, core):
@@ -47,9 +53,10 @@ def build_linker(branch, core):
             for connect_num in range(core_list[0].count('Os')):
                 core_list = create_linker(bran,core_list)
             new_linker_list.extend(core_list)
-        new_linker_dic = {new_linker_list[i]: SCScorer.get_score_from_smi(new_linker_list[i])[1] for i in range(len(new_linker_list))}
-        new_linker = sorted(new_linker_dic, key=new_linker_dic.get, reverse=True)[0]    
-    return(new_linker)
+        new_linker_dic = {new_linker_list[i]: scorer.get_score_from_smi(new_linker_list[i])[1] for i in range(len(new_linker_list))}
+        new_linker = sorted(new_linker_dic, key=new_linker_dic.get, reverse=True)[0]
+        score = new_linker_dic[new_linker]
+    return new_linker,score
 
 
 def perturb_z(z, noise_norm, constant_norm=False):
