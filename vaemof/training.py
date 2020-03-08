@@ -151,8 +151,11 @@ class TrainStats:
             values = OrderedDict()
             labels = model.vocab_y.labels
             for i, label in enumerate(labels):
-                values[f'{label}-r2'] = sklearn.metrics.r2_score(y_trues[i], y_preds[i])
-                values[f'{label}-MAE'] = sklearn.metrics.mean_absolute_error(y_trues[i], y_preds[i])
+                try:
+                    values[f'{label}-r2'] = sklearn.metrics.r2_score(y_trues[i], y_preds[i])
+                    values[f'{label}-MAE'] = sklearn.metrics.mean_absolute_error(y_trues[i], y_preds[i])
+                except:
+                    print('Error in computing metrics for y_trues: ',y_trues[i],'y_preds: ',y_preds[i])
             self.report_stats['mean_r2'] = np.nanmean([values[f'{label}-r2'] for label in labels])
             self.stats.update(values)
 
