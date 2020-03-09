@@ -24,7 +24,7 @@ def basic_config(work_dir, rand=False):
     config['train_device'] = 'cpu'
     config['train_seed'] = 42
     config['train_batch_size'] = 1536
-    config['train_epochs'] = 60
+    config['train_epochs'] = 90
     config['train_lr'] = 0.0005705023
     config['train_clip_grad'] = 20
     return config
