@@ -25,7 +25,7 @@ def basic_config(work_dir, rand=False):
     config['train_seed'] = 42
     config['train_batch_size'] = 1536
     config['train_epochs'] = 120
-    config['train_lr'] = 0.0005705023 #float(rand_uniform10(-5, -2)) if rand else 5e-3
+    config['train_lr'] = 0.0005705023
     config['train_clip_grad'] = 20
     return config
 
@@ -33,20 +33,20 @@ def basic_config(work_dir, rand=False):
 def vae_config(rand=False):
     config = AttributeDict()
 
-    config['enc_hidden_dim'] = 768 #int(rand_choice(np.arange(128, 808, 64))) if rand else 256
-    config['enc_n_layers'] = 1 #int(rand_int(1, 3)) if rand else 1
-    config['enc_dropout'] = 0.24 #float(rand_choice(np.linspace(0.0,.3,6))) if rand else 0.25
+    config['enc_hidden_dim'] = 768
+    config['enc_n_layers'] = 1
+    config['enc_dropout'] = 0.24
 
-    config['dec_hidden_dim'] = 704 #int(rand_choice(np.arange(128, 808, 64))) if rand else 512
-    config['dec_n_layers'] = 1 #int(rand_int(1, 3)) if rand else 1
-    config['dec_dropout'] = 0.24 #float(rand_choice(np.linspace(0.0,.3,6))) if rand else 0.0
+    config['dec_hidden_dim'] = 704
+    config['dec_n_layers'] = 1
+    config['dec_dropout'] = 0.24
 
     config["kl_cycle_length"] = 15
     config["kl_cycle_constant"] = 3
     config["kl_weight_start"] = 1e-5
-    config["kl_weight_end"] = 0.002794217 #float(rand_uniform10(-5, 2)) if rand else 0.77
+    config["kl_weight_end"] = 0.002794217
 
-    config['vae_latent_dim'] = 288 #int(rand_choice(np.arange(128, 316, 16))) if rand else 256
+    config['vae_latent_dim'] = 288
     config['vae_y_dec'] = True
     config['vae_selfies_dec'] = True
     config['vae_mof_enc'] = True
@@ -58,30 +58,26 @@ def vae_config(rand=False):
 
 def mof_config(rand=False):
     config = AttributeDict()
-    config['mof_encoding'] = 'cats' #rand_choice(['all', 'id', 'cats']) if rand else 'all'
-    config['mof_weighted_loss'] = True #rand_choice([True, False]) if rand else True
+    config['mof_encoding'] = 'cats'
+    config['mof_weighted_loss'] = True
     config['mof_w_start'] = 0.0
-    config['mof_w_end'] = 0.1 #float(rand_choice([1e-3, 1e-2, .1, .25, .5, .75, 1.0])) if rand else 1.0
-    config['mof_start'] = 0  # Epoch to start weight annealing.
-    config['mof_const_length'] = 10  # How many epochs to have constant values.
+    config['mof_w_end'] = 0.1
+    config['mof_start'] = 0
+    config['mof_const_length'] = 10
     return config
 
 
 def y_config(rand=False):
     config = AttributeDict()
 
-    config['y_labels'] = ['lcd', 'pld',
-                          'density', 'avf', 'avsa', 'agsa', 'co2n2_co2_mol_kg', 'co2n2_n2_mol_kg',
-                          'co2n2_selectivity', 'co2n2_heat_avg', 'co2n2_heat_co2',
-                          'co2n2_heat_n2', 'co2n2_heat_molfrac', 'co2ch4_co2_mol_kg',
-                          'co2ch4_ch4_mol_kg', 'co2ch4_selectivity', 'co2ch4_heat_avg',
-                          'co2ch4_heat_co2', 'co2ch4_heat_ch4', 'co2ch4_heat_molfrac', 'scscore']
-    config['y_weights'] = [1, 1, 1, 1, 1, 1, 10, 1, 10, 1, 1, 1, 1, 10, 1, 10, 1, 1, 1, 1, 1]
+    config['y_labels'] = ['lcd', 'pld','density','agsa', 'co2n2_co2_mol_kg',
+                          'co2n2_n2_mol_kg','co2ch4_co2_mol_kg','co2ch4_ch4_mol_kg']
+    config['y_weights'] = [1, 1, 1, 1, 1, 1, 1, 1]
     config['y_w_start'] = 0.0
-    config['y_w_end'] = 0.1 #float(rand_choice([1e-3, 1e-2, .1, .25, .5, .75, 1.0])) if rand else 1.0
-    config['y_start'] = 0  # Epoch to start weight annealing.
-    config['y_const_length'] = 10  # How many epochs to have constant values.
-    config['scaler_type'] = 'standard' #rand_choice(['standard', 'power', 'quantile']) if rand else 'standard'
+    config['y_w_end'] = 0.1
+    config['y_start'] = 0
+    config['y_const_length'] = 10
+    config['scaler_type'] = 'standard'
 
     return config
 
