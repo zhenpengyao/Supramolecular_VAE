@@ -317,7 +317,8 @@ class PropVocab:
         return self.scaler.transform(df[self.labels]), np.ones(len(df), dtype=np.float32)
 
     def invalid_values(self, n: int) -> Tuple[np.ndarray, np.ndarray]:
-        invalid_value = -5000 * np.ones_like(self.scaler.mean_)
+        shape = np.ones(8,)
+        invalid_value = -5000 * np.ones_like(shape)
         return np.array([invalid_value] * n, dtype=np.float32), np.zeros(n, dtype=np.float32)
 
 
