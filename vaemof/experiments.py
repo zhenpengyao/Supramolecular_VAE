@@ -235,16 +235,4 @@ def get_prop_df(csv_file, targets, mof2ids, testing, smiles_column, compute_scsc
     df['id2mof'] = df[mof_cols].apply(lambda x: mof2ids[tuple(x)], axis=1)
     print('Removed {} datapoints due non-valid mof (mof2ids).'.format(n_remove))
 
-    # Specific changes to properties
-    # df['co2n2_selectivity'] = df['co2n2_selectivity'].apply(
-    #    lambda x: x if x < 50 else 50.0)
-    # df['co2ch4_selectivity'] = df['co2ch4_selectivity'].apply(
-    #    lambda x: x if x < 50 else 50.0)
-    n_remove = len(df)
-    df = df[df['co2n2_selectivity'] < 200.0]
-    df = df[df['co2ch4_selectivity'] < 200.0]
-    df = df.reset_index(drop=True)
-    n_remove -= len(df)
-    print('Removed {} datapoints due to high selectivity.'.format(n_remove))
-
     return df
