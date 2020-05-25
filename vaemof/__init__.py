@@ -5,4 +5,4 @@ from . import training
 from . import utils
 from . import vocabs
 
-__version__ = 'beta'
+__version__ = '1.0'
